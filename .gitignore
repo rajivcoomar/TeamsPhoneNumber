@@ -1,0 +1,26 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/Source/CompanyCommunicator/obj
+/Source/CompanyCommunicator/bin/Debug/net6.0
+/Manifest/Softel
+/Manifest/StarK
+/.vs
+/Source/.vs
+/Source/CompanyCommunicator.Common/bin/Debug/netstandard2.1
+/Source/CompanyCommunicator.Common/obj
+/Source/CompanyCommunicator.Data.Func/bin/Debug/net6.0
+/Source/CompanyCommunicator.Data.Func/obj
+/Source/CompanyCommunicator.Prep.Func/bin/Debug/net6.0
+/Source/CompanyCommunicator.Prep.Func/obj
+/Source/CompanyCommunicator.Send.Func/bin/Debug/net6.0
+/Source/CompanyCommunicator.Send.Func/obj
+/Source/Test/CompanyCommunicator.Common.Test/bin/Debug/net6.0
+/Source/Test/CompanyCommunicator.Common.Test/obj
+/Source/Test/CompanyCommunicator.Prep.Func.Test/bin/Debug/net6.0
+/Source/Test/CompanyCommunicator.Prep.Func.Test/obj
+/Source/Test/CompanyCommunicator.Send.Func.Test/bin/Debug/net6.0
+/Source/Test/CompanyCommunicator.Send.Func.Test/obj
+/Source/Test/CompanyCommunicator.Test/bin/Debug/net6.0
+/Source/Test/CompanyCommunicator.Test/obj
