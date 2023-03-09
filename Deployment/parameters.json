@@ -1,18 +1,18 @@
 {
   "subscriptionId": {
-    "Value": "049fdb9a-7fbc-4544-9d56-527db3cfaf7c",
+    "Value": "e3918976-5d63-4545-aa2e-62327ef59d28",
     "Description": "Azure Subscription ID. All resources in an Azure subscription are billed together."
   },
   "subscriptionTenantId": {
-    "Value": "4a26d55f-d1db-4ee3-9a22-1ef63f9cdf56",
+    "Value": "6215ebd7-b37d-4bc7-a032-1a2ea90dc0b9",
     "Description": "Id of the tenant to deploy to (If you are not sure how to get Tenant ID, please check Azure Active Directory in Azure Portal. Under Manage, click Properties. The tenant ID is shown in the Directory ID box). e.g 98f3ece2-3a5a-428b-aa4f-4c41b3f6eef0. Tenant ID is also in the \"Overview\" section\""
   },
   "UserObjectId": {
-    "Value": "c540b620-3464-447c-ae28-aba2c9753c2e",
+    "Value": "8b343562-5633-4cdc-a70c-293ddb2600ec",
     "Description": "User Object Id."
   },
   "resourceGroupName": {
-    "Value": "rg-companyComm-Coomar-B",
+    "Value": "rg-eus-comm-dev-001",
     "Description": "Resource Group"
   },
   "region": {
@@ -20,15 +20,15 @@
     "Description": "The Azure region that's right for you and your customers. Not every resource is available in every region."
   },
   "baseResourceName": {
-    "Value": "companyCommCoomarB",
+    "Value": "azdeusbaseapp",
     "Description": "The base name to use for the resources that will be provisioned."
   },
   "tenantId": {
-    "Value": "4a26d55f-d1db-4ee3-9a22-1ef63f9cdf56",
+    "Value": "6215ebd7-b37d-4bc7-a032-1a2ea90dc0b9",
     "Description": "Tenant Id where the teams application will be installed. If the Azure subscription is in the same tenant, update with \"subscriptionTenantId\" parameter value."
   },
   "senderUPNList": {
-    "Value": "rajiv@softel.net",
+    "Value": "rcoomar@softel.com",
     "Description": "Semicolon-delimited list of the user principal names (UPNs) allowed to send messages."
   },
   "useCertificate": {
@@ -116,7 +116,7 @@
     "Description": "The branch of the GitHub repository to deploy."
   },
   "appDisplayName": {
-    "Value": "Company Communicator",
+    "Value": "Dev Del Monte Company Communicator",
     "Description": "The app (and bot) display name."
   },
   "appDescription": {
@@ -128,11 +128,11 @@
     "Description": "The link to the icon for the app. It must resolve to a PNG file."
   },
   "headerText": {
-    "Value": "B Del Monte Communications",
+    "Value": "Dev Del Monte Communications",
     "Description": "The header banner text."
   },
   "headerLogoUrl": {
-    "Value": "https://upload.wikimedia.org/wikipedia/en/6/60/Del_Monte_logo.svg",
+    "Value": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Logo_Del_Monte.svg/2560px-Logo_Del_Monte.svg.png",
     "Description": "The link to the logo for the app. It must resolve to a PNG file."
   },
   "companyName": {
@@ -140,15 +140,15 @@
     "Description": "The display name for the company."
   },
   "websiteUrl": {
-    "Value": "https://www.softel.com",
+    "Value": "https://www.delmonte.com/",
     "Description": "The https:// URL to the company's website. This link should take users to your company or product-specific landing page."
   },
   "privacyUrl": {
-    "Value": "https://www.softel.com/privacy-2/",
+    "Value": "https://www.delmonte.com/privacy-policy",
     "Description": "The https:// URL to the company's privacy policy."
   },
   "termsOfUseUrl": {
-    "Value": "https://www.softel.com",
+    "Value": "https://www.delmonte.com/",
     "Description": "The https:// URL to the company's terms of use."
   }
 }
