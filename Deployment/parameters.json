@@ -64,31 +64,31 @@
     "Description": "User app external ID."
   },
   "serviceBusWebAppRoleNameGuid": {
-    "Value": "958380b3-630d-4823-b933-f59d92cdcada",
+    "Value": "9576d90a-37b5-4fe9-88f4-cfe3ce78370a",
     "Description": "A GUID used to identify the role assignment. This is Default value."
   },
   "serviceBusPrepFuncRoleNameGuid": {
-    "Value": "ce6ca916-08e9-4639-bfbe-9d098baf42ca",
+    "Value": "67062e28-07bd-4ac1-9f80-cba092de4225",
     "Description": "A GUID used to identify the role assignment. This is Default value."
   },
   "serviceBusSendFuncRoleNameGuid": {
-    "Value": "960365a2-c7bf-4ff3-8887-efa86fe4a163",
+    "Value": "d75495fe-f38e-408b-9086-9d6408399703",
     "Description": "A GUID used to identify the role assignment. This is Default value."
   },
   "serviceBusDataFuncRoleNameGuid": {
-    "Value": "d42703bc-421d-4d98-bc4d-cd2bb16e5b0a",
+    "Value": "1c24a5ea-7d98-419f-a153-42a1bc7c2356",
     "Description": "A GUID used to identify the role assignment. This is Default value."
   },
   "storageAccountWebAppRoleNameGuid": {
-    "Value": "edd0cc48-2cf7-490e-99e8-131311e42030",
+    "Value": "a134dcb3-0075-4cb3-ba5f-4fa5a2b0fb86",
     "Description": "A GUID used to identify the role assignment. This is Default value."
   },
   "storageAccountPrepFuncRoleNameGuid": {
-    "Value": "9332a9e9-93f4-48d9-8121-d279f30a732e",
+    "Value": "6c3f3e97-859d-43f9-9bc2-34eb504974b4",
     "Description": "A GUID used to identify the role assignment. This is Default value."
   },
   "storageAccountDataFuncRoleNameGuid": {
-    "Value": "5b67af51-4a98-47e1-9d22-745069f51a13",
+    "Value": "7c3a2323-7cd4-48a1-adb4-809e0e87a33b",
     "Description": "A GUID used to identify the role assignment. This is Default value."
   },
   "defaultCulture": {
