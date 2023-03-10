@@ -127,7 +127,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Controllers
                 ButtonLink = notification.ButtonLink,
                 CreatedBy = this.HttpContext.User?.Identity?.Name,
                 CreatedDate = DateTime.UtcNow,
-                MessageType = notification.MessageType,
+                MessageType = string.IsNullOrEmpty(notification.MessageType) ? "TeamsOnly" : notification.MessageType,
             };
 
             var spanishLang = await this.languageTranslateService.TranslateTextRequest(
@@ -214,7 +214,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Controllers
                 Rosters = notification.Rosters,
                 Groups = notification.Groups,
                 AllUsers = notification.AllUsers,
-                MessageType = notification.MessageType,
+                MessageType = string.IsNullOrEmpty(notification.MessageType) ? "TeamsOnly" : notification.MessageType,
             };
 
             if (!string.IsNullOrEmpty(notification.ImageLink) && notification.ImageLink.StartsWith(Constants.ImageBase64Format))

@@ -7,6 +7,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Common.Services
 {
     using System.Threading.Tasks;
     using Microsoft.Bot.Schema;
+    using Microsoft.Teams.Apps.CompanyCommunicator.Common.Services.MessageQueues.SendQueue;
 
     /// <summary>
     /// App settings interface.
@@ -33,5 +34,12 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Common.Services
         /// <param name="userId">user Id.</param>
         /// <returns>initial message text</returns>
         public Task<string> GetUpdateInitialMessage(string userId);
+
+        /// <summary>
+        /// remove user from group.
+        /// </summary>
+        /// <param name="messageContent">message Content.</param>
+        /// <returns>A representing the result of the asynchronous operation.</returns>
+        public Task<string> SendSMSFunctionAsync(SendQueueMessageContent messageContent);
     }
 }

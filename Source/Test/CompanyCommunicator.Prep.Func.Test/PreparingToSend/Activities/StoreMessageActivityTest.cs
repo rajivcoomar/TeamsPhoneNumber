@@ -11,6 +11,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.Test.PreparingToSen
     using FluentAssertions;
     using Microsoft.Extensions.Caching.Memory;
     using Microsoft.Extensions.Logging;
+    using Microsoft.Teams.Apps.CompanyCommunicator.Common.Repositories;
     using Microsoft.Teams.Apps.CompanyCommunicator.Common.Repositories.NotificationData;
     using Microsoft.Teams.Apps.CompanyCommunicator.Common.Services.AdaptiveCard;
     using Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.PreparingToSend;
@@ -24,6 +25,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.Test.PreparingToSen
     {
         private readonly Mock<AdaptiveCardCreator> adaptiveCardCreator = new Mock<AdaptiveCardCreator>();
         private readonly Mock<ISendingNotificationDataRepository> sendingNotificationDataRepository = new Mock<ISendingNotificationDataRepository>();
+        private readonly Mock<ICustomMessageLocaleRepository> customMessageLocaleRepository = new Mock<ICustomMessageLocaleRepository>();
         private readonly Mock<IMemoryCache> memoryCache = new Mock<IMemoryCache>();
         private readonly Mock<ILogger> logger = new Mock<ILogger>();
 
@@ -35,9 +37,9 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.Test.PreparingToSen
         public void StoreMessageActivityConstructorTest()
         {
             // Arrange
-            Action action1 = () => new StoreMessageActivity(null /*notificationRepo*/, this.adaptiveCardCreator.Object, this.memoryCache.Object);
-            Action action2 = () => new StoreMessageActivity(this.sendingNotificationDataRepository.Object, null /*cardCreator*/, this.memoryCache.Object);
-            Action action3 = () => new StoreMessageActivity(this.sendingNotificationDataRepository.Object, this.adaptiveCardCreator.Object, this.memoryCache.Object);
+            Action action1 = () => new StoreMessageActivity(null /*notificationRepo*/, this.customMessageLocaleRepository.Object, this.adaptiveCardCreator.Object, this.memoryCache.Object);
+            Action action2 = () => new StoreMessageActivity(this.sendingNotificationDataRepository.Object, this.customMessageLocaleRepository.Object, null /*cardCreator*/, this.memoryCache.Object);
+            Action action3 = () => new StoreMessageActivity(this.sendingNotificationDataRepository.Object, this.customMessageLocaleRepository.Object, this.adaptiveCardCreator.Object, this.memoryCache.Object);
 
             // Act and Assert.
             action1.Should().Throw<ArgumentNullException>("notificationRepo is null.");
@@ -106,7 +108,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.Test.PreparingToSen
         /// <returns>return the instance of StoreMessageActivity.</returns>
         private StoreMessageActivity GetStoreMessageActivity()
         {
-            return new StoreMessageActivity(this.sendingNotificationDataRepository.Object, this.adaptiveCardCreator.Object, this.memoryCache.Object);
+            return new StoreMessageActivity(this.sendingNotificationDataRepository.Object, this.customMessageLocaleRepository.Object, this.adaptiveCardCreator.Object, this.memoryCache.Object);
         }
     }
 }

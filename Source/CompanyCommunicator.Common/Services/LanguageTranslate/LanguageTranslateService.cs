@@ -86,6 +86,30 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Common.Services
             return string.Empty;
         }
 
+        /// <inheritdoc/>
+        public async Task UpdateNewNotificationID(string oldNotificationID, string newNotificationID)
+        {
+            var cusomLangData = await this.customMessageLocaleRepository.GetAsync(CustomMessageLocaleTableName.SpanishLangPartition, oldNotificationID);
+
+            var newCusomLangData = new CustomMessageLocaleEntity()
+            {
+                Author = cusomLangData.Author,
+                ButtonLink = cusomLangData.ButtonLink,
+                ButtonTitle = cusomLangData.ButtonTitle,
+                CreatedBy = cusomLangData.CreatedBy,
+                CreatedDate = cusomLangData.CreatedDate,
+                Summary = cusomLangData.Summary,
+                Title = cusomLangData.Title,
+                NotificationId = cusomLangData.RowKey,
+                RowKey = newNotificationID,
+                PartitionKey = CustomMessageLocaleTableName.SpanishLangPartition,
+            };
+            await this.customMessageLocaleRepository.CreateOrUpdateAsync(newCusomLangData);
+
+            // Delete the draft language translated notification .
+            await this.customMessageLocaleRepository.DeleteAsync(cusomLangData);
+        }
+
         private async Task<string> TranslateText(string inputText)
         {
             if (string.IsNullOrEmpty(inputText))

@@ -265,4 +265,43 @@
   <data name="ColumnName_Error" xml:space="preserve">
     <value>Error</value>
   </data>
+  <data name="ColumnName_Failed" xml:space="preserve">
+    <value>Teams Failed</value>
+  </data>
+  <data name="ColumnName_MessageAuthor" xml:space="preserve">
+    <value>Message Author</value>
+  </data>
+  <data name="ColumnName_MessageButtonLink" xml:space="preserve">
+    <value>Message Button Link</value>
+  </data>
+  <data name="ColumnName_MessageButtonTitle" xml:space="preserve">
+    <value>Message Button Title</value>
+  </data>
+  <data name="ColumnName_MessageSummary" xml:space="preserve">
+    <value>Message Summary</value>
+  </data>
+  <data name="ColumnName_MessageType" xml:space="preserve">
+    <value>Message Type</value>
+  </data>
+  <data name="ColumnName_MobileDeliveryStatus" xml:space="preserve">
+    <value>Mobile Delivery Status</value>
+  </data>
+  <data name="ColumnName_MobileNumber" xml:space="preserve">
+    <value>Mobile Number</value>
+  </data>
+  <data name="ColumnName_MobileStatusReason" xml:space="preserve">
+    <value>Mobile Status Reason</value>
+  </data>
+  <data name="ColumnName_PreferredLanguage" xml:space="preserve">
+    <value>Preferred Language</value>
+  </data>
+  <data name="ColumnName_SMSFailed" xml:space="preserve">
+    <value>SMS Failed</value>
+  </data>
+  <data name="ColumnName_SMSSucceeded" xml:space="preserve">
+    <value>SMS Succeeded</value>
+  </data>
+  <data name="ColumnName_Succeeded" xml:space="preserve">
+    <value>Teams Succeeded</value>
+  </data>
 </root>

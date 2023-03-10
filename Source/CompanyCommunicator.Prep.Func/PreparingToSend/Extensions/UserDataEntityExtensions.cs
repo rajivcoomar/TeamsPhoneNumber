@@ -40,7 +40,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.PreparingToSend.Ext
                 MobileNumber = userDataEntity.MobileNumber,
                 PresenceStatus = userDataEntity.PresenceStatus ?? string.Empty,
                 MessageType = notification.MessageType,
-                // PrefLang = userDataEntity.PrefLang ?? string.Empty,
+                PreferredLanguage = userDataEntity.PreferredLanguage ?? string.Empty,
             };
         }
     }

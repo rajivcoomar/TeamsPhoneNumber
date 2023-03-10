@@ -230,5 +230,10 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Common.Repositories.SentNotif
         /// Gets or sets Message Type.
         /// </summary>
         public string SMSDeliveryStatus { get; set; }
+
+        /// <summary>
+        /// Gets or sets the preferred language for the recipient.
+        /// </summary>
+        public string PreferredLanguage { get; set; }
     }
 }

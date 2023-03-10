@@ -59,6 +59,22 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Data.Func.Services.Notificati
         public int? Canceled { get; set; }
 
         /// <summary>
+        /// Gets or sets the number of recipients who have received the notification successfully.
+        /// </summary>
+        public int SMSSucceeded { get; set; }
+
+        /// <summary>
+        /// Gets or sets the number of recipients who failed to receive the notification because
+        /// of a failure response in the API call.
+        /// </summary>
+        public int SMSFailed { get; set; }
+
+        /// <summary>
+        /// Gets or sets the number of not found recipients.
+        /// </summary>
+        public int? SMSRecipientNotFound { get; set; }
+
+        /// <summary>
         /// Checks if the notification is completed.
         /// </summary>
         /// <returns>If the notification is completed.</returns>

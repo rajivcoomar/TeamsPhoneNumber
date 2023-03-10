@@ -334,8 +334,6 @@ function CreateAzureADApp {
         #Reset the app credentials to get the secret. The default validity of this secret will be for 1 year from the date its created. 
         if ($ResetAppSecret) {
             WriteI -message "Updating app secret..."
-			WriteI -message "Updating app secret... $app"
-			WriteI -message "Updating app secret... $app.appId"
             $appSecret = az ad app credential reset --id $app.appId --append | ConvertFrom-Json;
         }
 

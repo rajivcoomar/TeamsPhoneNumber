@@ -90,7 +90,17 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.Export.Activities
         {
             var metadata = new Metadata
             {
+                NotificationId = notificationDataEntity.RowKey,
                 MessageTitle = notificationDataEntity.Title,
+                MessageSummary = notificationDataEntity.Summary,
+                MessageAuthor = notificationDataEntity.Author,
+                Failed = notificationDataEntity.Failed,
+                MessageButtonLink = notificationDataEntity.ButtonLink,
+                MessageButtonTitle = notificationDataEntity.ButtonTitle,
+                MessageType = notificationDataEntity.MessageType,
+                SMSFailed = notificationDataEntity.SMSFailed,
+                SMSSucceeded = notificationDataEntity.SMSSucceeded,
+                Succeeded = notificationDataEntity.Succeeded,
                 SentTimeStamp = notificationDataEntity.SentDate,
                 ExportedBy = userPrinicipalName,
                 ExportTimeStamp = exportDataEntity.SentDate,

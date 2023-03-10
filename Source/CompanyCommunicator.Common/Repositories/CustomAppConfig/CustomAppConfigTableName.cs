@@ -59,5 +59,15 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Common.Repositories
         /// Thanks Message row key.
         /// </summary>
         public static readonly string ThanksMessageESRowKey = "ThanksMessage_ES";
+
+        /// <summary>
+        /// Opt-OutFunction row key.
+        /// </summary>
+        public static readonly string OptOutFunctionURLRowKey = "Opt-OutFunctionURL";
+
+        /// <summary>
+        /// Send SMS Function URL row key.
+        /// </summary>
+        public static readonly string SendSMSFunctionURLRowKey = "SendSMSFunctionURL";
     }
 }

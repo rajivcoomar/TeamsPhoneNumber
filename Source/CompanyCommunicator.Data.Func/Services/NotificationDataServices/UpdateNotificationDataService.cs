@@ -64,6 +64,10 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Data.Func.Services.Notificati
                 var recipientNotFoundCount = aggregatedSentNotificationDataResults.RecipientNotFoundCount;
                 var lastSentDate = aggregatedSentNotificationDataResults.LastSentDate;
 
+                var smsSucceededCount = aggregatedSentNotificationDataResults.SMSSucceededCount;
+                var smsFailedCount = aggregatedSentNotificationDataResults.SMSFailedCount;
+                var smsRecipientNotFoundCount = aggregatedSentNotificationDataResults.SMSRecipientNotFoundCount;
+
                 // Create the general update.
                 var notificationDataEntityUpdate = new UpdateNotificationDataEntity
                 {
@@ -73,6 +77,9 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Data.Func.Services.Notificati
                     Failed = failedCount,
                     RecipientNotFound = recipientNotFoundCount,
                     Throttled = throttledCount,
+                    SMSSucceeded = smsSucceededCount,
+                    SMSFailed = smsFailedCount,
+                    SMSRecipientNotFound = smsRecipientNotFoundCount,
                 };
 
                 if (orchestrationStatus.Equals(nameof(OrchestrationStatus.Terminated), StringComparison.InvariantCultureIgnoreCase)

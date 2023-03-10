@@ -8,9 +8,11 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Test.Controllers
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net.Http;
     using System.Threading.Tasks;
     using FluentAssertions;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Logging;
     using Microsoft.Graph;
     using Microsoft.Teams.Apps.CompanyCommunicator.Common.Repositories.NotificationData;
     using Microsoft.Teams.Apps.CompanyCommunicator.Common.Services.MicrosoftGraph;
@@ -27,6 +29,8 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Test.Controllers
     {
         private readonly Mock<INotificationDataRepository> notificationDataRepository = new Mock<INotificationDataRepository>();
         private readonly Mock<IGroupsService> groupsService = new Mock<IGroupsService>();
+        private readonly Mock<IHttpClientFactory> httpClientFactory = new Mock<IHttpClientFactory>();
+        private readonly Mock<ILoggerFactory> loggerFactory = new Mock<ILoggerFactory>();
 
         /// <summary>
         /// Constructor test for all parameters.
@@ -35,7 +39,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Test.Controllers
         public void CreateInstance_AllParameters_ShouldBeSuccess()
         {
             // Arrange
-            Action action = () => new GroupDataController(this.notificationDataRepository.Object, this.groupsService.Object);
+            Action action = () => new GroupDataController(this.notificationDataRepository.Object, this.groupsService.Object, this.httpClientFactory.Object, this.loggerFactory.Object);
 
             // Act and Assert.
             action.Should().NotThrow();
@@ -48,8 +52,8 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Test.Controllers
         public void CreateInstance_NullParameter_ThrowsArgumentNullException()
         {
             // Arrange
-            Action action1 = () => new GroupDataController(null /*notificationDataRepository*/, this.groupsService.Object);
-            Action action2 = () => new GroupDataController(this.notificationDataRepository.Object, null /*groupsService*/);
+            Action action1 = () => new GroupDataController(null /*notificationDataRepository*/, this.groupsService.Object, this.httpClientFactory.Object, this.loggerFactory.Object);
+            Action action2 = () => new GroupDataController(this.notificationDataRepository.Object, null /*groupsService*/, this.httpClientFactory.Object, this.loggerFactory.Object);
 
             // Act and Assert.
             action1.Should().Throw<ArgumentNullException>("notificationDataRepository is null.");
@@ -292,7 +296,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Test.Controllers
         /// </summary>
         private GroupDataController GetGroupDataControllerInstance()
         {
-            return new GroupDataController(this.notificationDataRepository.Object, this.groupsService.Object);
+            return new GroupDataController(this.notificationDataRepository.Object, this.groupsService.Object, this.httpClientFactory.Object, this.loggerFactory.Object);
         }
     }
 }

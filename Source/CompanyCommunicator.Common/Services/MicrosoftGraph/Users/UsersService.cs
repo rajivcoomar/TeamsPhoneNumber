@@ -139,7 +139,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Common.Services.MicrosoftGrap
                         user.UserType,
                         user.MobilePhone,
                         user.PreferredLanguage,
-                        user.Presence.Activity,
+                        // user.Presence.Activity,
                     })
                     .WithMaxRetry(GraphConstants.MaxRetry)
                     .GetAsync();

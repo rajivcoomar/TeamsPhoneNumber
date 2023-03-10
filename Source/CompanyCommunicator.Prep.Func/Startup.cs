@@ -129,6 +129,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func
             builder.Services.AddSingleton<IAppConfigRepository, AppConfigRepository>();
             builder.Services.AddSingleton<ICustomUserReplyRepository, CustomUserReplyRepository>();
             builder.Services.AddSingleton<ICustomAppConfigRepository, CustomAppConfigRepository>();
+            builder.Services.AddSingleton<ICustomMessageLocaleRepository, CustomMessageLocaleRepository>();
 
             // Add service bus message queues.
             builder.Services.AddSingleton<ISendQueue, SendQueue>();

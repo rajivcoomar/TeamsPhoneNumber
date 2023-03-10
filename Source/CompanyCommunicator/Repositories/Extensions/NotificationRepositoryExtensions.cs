@@ -50,7 +50,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Repositories.Extensions
                 Rosters = notification.Rosters,
                 Groups = notification.Groups,
                 AllUsers = notification.AllUsers,
-                MessageType = notification.MessageType,
+                MessageType = string.IsNullOrEmpty(notification.MessageType) ? "TeamsOnly" : notification.MessageType,
             };
 
             if (!string.IsNullOrEmpty(notification.ImageLink) && notification.ImageLink.StartsWith(Constants.ImageBase64Format))

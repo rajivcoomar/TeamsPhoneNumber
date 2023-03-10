@@ -104,7 +104,7 @@ class NewMessage extends React.Component<INewMessageProps, formState> {
 		this.setDefaultCard(this.card);
 
 		this.state = {
-			sendMessageType: "",
+			sendMessageType: "TeamsOnly",
 			title: "",
 			summary: "",
 			author: "",

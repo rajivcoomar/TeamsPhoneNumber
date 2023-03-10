@@ -6,6 +6,7 @@
 namespace Microsoft.Teams.Apps.CompanyCommunicator.Send.Func
 {
     using System;
+    using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.Azure.WebJobs;
     using Microsoft.Bot.Builder;
@@ -117,7 +118,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Send.Func
             //DateTime enqueuedTimeUtc,
             //string messageId,
 
-            log.LogInformation($"C# ServiceBus queue trigger function processed message: {myQueueItem}");
+            log.LogInformation($"C# ServiceBus queue trigger function processed message [SendMessageFunction]: {myQueueItem}");
 
             var messageContent = JsonConvert.DeserializeObject<SendQueueMessageContent>(myQueueItem);
 
@@ -176,41 +177,67 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Send.Func
 
                 log.LogInformation($"C# Send message triggered");
 
-                // Send message.
-                var messageActivity = await this.GetMessageActivity(messageContent, log);
-                var response = await this.messageService.SendMessageAsync(
-                    message: messageActivity,
-                    serviceUrl: messageContent.GetServiceUrl(),
-                    conversationId: messageContent.GetConversationId(),
-                    maxAttempts: this.maxNumberOfAttempts,
-                    logger: log);
+                var isUserPresenceOffline = false;
 
-                // Process response.
-                await this.ProcessResponseAsync(messageContent, response, log);
-
-                log.LogInformation($"C# Send message triggered completed");
-
-                // TO CHECK INITIAL MESSAGE SENT, IF NOT SEND INITIAL MESSAGE
-                var initialMsgSend = await this.customUserReplyService.GetUpdateInitialMessage(messageContent.RecipientData.RecipientId);
-                log.LogInformation($"C# Send message initialMsgSend: {initialMsgSend}");
-
-                if (!string.IsNullOrEmpty(initialMsgSend))
+                // send teams message if "teams message" option is selected.
+                if (messageContent.MessageType == "TeamsOnly" || messageContent.MessageType == "Both" || messageContent.MessageType == "TeamsthenSMS")
                 {
-                    IMessageActivity initMessage = Activity.CreateMessageActivity();
-                    initMessage.Text = initialMsgSend;
-                    initMessage.TextFormat = "plain";
+                    log.LogInformation($"C# Send Teams message triggered");
 
-                    // initMessage.Locale = "en-us";
-                    var initMsgResponse = await this.messageService.SendMessageAsync(
-                        message: initMessage,
-                        serviceUrl: messageContent.GetServiceUrl(),
-                        conversationId: messageContent.GetConversationId(),
-                        maxAttempts: this.maxNumberOfAttempts,
-                        logger: log);
+                    // check online status of user, if offline then send sms
+                    if (messageContent.MessageType == "TeamsthenSMS" && messageContent.PresenceStatus == "Available")
+                    {
+                        isUserPresenceOffline = true;
+                    }
+                    else
+                    {
+                        // Send message.
+                        var messageActivity = await this.GetMessageActivity(messageContent, log);
+                        var response = await this.messageService.SendMessageAsync(
+                            message: messageActivity,
+                            serviceUrl: messageContent.GetServiceUrl(),
+                            conversationId: messageContent.GetConversationId(),
+                            maxAttempts: this.maxNumberOfAttempts,
+                            logger: log);
 
-                    log.LogInformation($"C# Send message initMsgResponse: {initMsgResponse}");
+                        // Process response.
+                        await this.ProcessResponseAsync(messageContent, response, log);
 
-                    // await this.ProcessResponseAsync(messageContent, initMsgResponse, log);
+                        log.LogInformation($"C# Send Teams message triggered completed");
+
+                        // TO CHECK INITIAL MESSAGE SENT, IF NOT SEND INITIAL MESSAGE
+                        var initialMsgSend = await this.customUserReplyService.GetUpdateInitialMessage(messageContent.RecipientData.RecipientId);
+                        log.LogInformation($"C# Send message initialMsgSend: {initialMsgSend}");
+
+                        if (!string.IsNullOrEmpty(initialMsgSend))
+                        {
+                            IMessageActivity initMessage = Activity.CreateMessageActivity();
+                            initMessage.Text = initialMsgSend;
+                            initMessage.TextFormat = "plain";
+
+                            // initMessage.Locale = "en-us";
+                            var initMsgResponse = await this.messageService.SendMessageAsync(
+                                message: initMessage,
+                                serviceUrl: messageContent.GetServiceUrl(),
+                                conversationId: messageContent.GetConversationId(),
+                                maxAttempts: this.maxNumberOfAttempts,
+                                logger: log);
+
+                            log.LogInformation($"C# Send message initMsgResponse: {initMsgResponse}");
+
+                            // await this.ProcessResponseAsync(messageContent, initMsgResponse, log);
+                        }
+                    }
+                }
+
+                // send SMS message if "SMS message" option is selected.
+                if (messageContent.MessageType == "SMSOnly" || messageContent.MessageType == "Both" || isUserPresenceOffline)
+                {
+                    log.LogInformation($"C# Send SMS message triggered");
+
+                    var response = await this.customUserReplyService.SendSMSFunctionAsync(messageContent);
+
+                    log.LogInformation($"C# Send SMS message triggered");
                 }
             }
             catch (InvalidOperationException exception)
@@ -300,12 +327,22 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Send.Func
 
             if (!isCacheEntryExists)
             {
+                var notificID = message.NotificationId;
+                if (Constants.SpanishKeywords.Contains(message.RecipientData.UserData.PreferredLanguage.ToLower()))
+                {
+                    notificID = notificID + NotificationDataTableNames.SpanishLanguageRowKey;
+                }
+                else
+                {
+                    notificID = notificID + NotificationDataTableNames.EnglishLanguageRowKey;
+                }
+
                 // Download serialized AC from blob storage.
-                jsonAC = await this.notificationRepo.GetAdaptiveCardAsync(message.NotificationId);
+                jsonAC = await this.notificationRepo.GetAdaptiveCardAsync(notificID);
                 this.memoryCache.Set(cacheKeySentCard, jsonAC, TimeSpan.FromHours(Constants.CacheDurationInHours));
 
                 log.LogInformation($"Successfully cached the sent card data." +
-                                $"\nNotificationId Id: {message.NotificationId}");
+                                $"\nNotificationId Id: {notificID}");
             }
 
             var adaptiveCardAttachment = new Attachment()

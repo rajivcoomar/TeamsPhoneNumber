@@ -94,7 +94,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Common
         /// <summary>
         /// All Key words in the app.
         /// </summary>
-        public static string[] AllKeywords = new string[] { "español", "española", "inglés", "inglesa", "help", "ayuda", "english", "spanish", "stop" };
+        public static string[] AllKeywords = new string[] { "español", "española", "spanish", "inglés", "inglesa", "english", "help", "ayuda", "stop", "detener" };
 
         /// <summary>
         /// English Key words.
@@ -110,6 +110,11 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Common
         /// Help Key words.
         /// </summary>
         public static string[] HelpKeywords = new string[] { "help", "ayuda" };
+
+        /// <summary>
+        /// Stop Key words.
+        /// </summary>
+        public static string[] StopKeywords = new string[] { "stop", "detener" };
 
         /// <summary>
         /// All Language Key words.

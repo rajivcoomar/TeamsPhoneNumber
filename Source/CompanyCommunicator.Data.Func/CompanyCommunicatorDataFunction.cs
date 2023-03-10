@@ -80,6 +80,12 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Data.Func
             ILogger log,
             ExecutionContext context)
         {
+            //int deliveryCount = 1;
+            //DateTime enqueuedTimeUtc,
+            //string messageId,
+
+            log.LogInformation($"C# ServiceBus queue trigger function processed message [CompanyCommunicatorDataFunction]: {myQueueItem}");
+
             var messageContent = JsonConvert.DeserializeObject<DataQueueMessageContent>(myQueueItem);
 
             var notificationDataEntity = await this.notificationDataRepository.GetAsync(

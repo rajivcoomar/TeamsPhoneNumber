@@ -34,5 +34,15 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Common.Repositories.Notificat
         /// Sent notifications partition key name.
         /// </summary>
         public static readonly string SentNotificationsPartition = "SentNotifications";
+
+        /// <summary>
+        /// Sent notifications partition key name.
+        /// </summary>
+        public static readonly string EnglishLanguageRowKey = "English";
+
+        /// <summary>
+        /// Sent notifications partition key name.
+        /// </summary>
+        public static readonly string SpanishLanguageRowKey = "Spanish";
     }
 }

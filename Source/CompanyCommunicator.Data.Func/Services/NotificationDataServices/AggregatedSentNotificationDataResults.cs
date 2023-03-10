@@ -39,6 +39,21 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Data.Func.Services.Notificati
         public int RecipientNotFoundCount { get; set; }
 
         /// <summary>
+        /// Gets or sets the currently known count of successfully sent notifications.
+        /// </summary>
+        public int SMSSucceededCount { get; set; }
+
+        /// <summary>
+        /// Gets or sets the currently known count of notifications that failed to send.
+        /// </summary>
+        public int SMSFailedCount { get; set; }
+
+        /// <summary>
+        /// Gets or sets the currently known count of notifications with recipient not found issue.
+        /// </summary>
+        public int SMSRecipientNotFoundCount { get; set; }
+
+        /// <summary>
         /// Gets or sets the sent date of the last known notification.
         /// </summary>
         public DateTime? LastSentDate { get; set; }
@@ -51,21 +66,40 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Data.Func.Services.Notificati
         {
             this.CurrentTotalNotificationCount++;
 
-            if (sentNotification.DeliveryStatus == SentNotificationDataEntity.Succeeded)
+            if (sentNotification.MessageType == "TeamsOnly" || sentNotification.MessageType == "Both" || sentNotification.MessageType == "TeamsthenSMS")
             {
-                this.SucceededCount++;
+                if (sentNotification.DeliveryStatus == SentNotificationDataEntity.Succeeded)
+                {
+                    this.SucceededCount++;
+                }
+                else if (sentNotification.DeliveryStatus == SentNotificationDataEntity.Failed)
+                {
+                    this.FailedCount++;
+                }
+                else if (sentNotification.DeliveryStatus == SentNotificationDataEntity.Throttled)
+                {
+                    this.ThrottledCount++;
+                }
+                else if (sentNotification.DeliveryStatus == SentNotificationDataEntity.RecipientNotFound)
+                {
+                    this.RecipientNotFoundCount++;
+                }
             }
-            else if (sentNotification.DeliveryStatus == SentNotificationDataEntity.Failed)
+
+            if (sentNotification.MessageType == "SMSOnly" || sentNotification.MessageType == "Both" || sentNotification.MessageType == "TeamsthenSMS")
             {
-                this.FailedCount++;
-            }
-            else if (sentNotification.DeliveryStatus == SentNotificationDataEntity.Throttled)
-            {
-                this.ThrottledCount++;
-            }
-            else if (sentNotification.DeliveryStatus == SentNotificationDataEntity.RecipientNotFound)
-            {
-                this.RecipientNotFoundCount++;
+                if (sentNotification.SMSDeliveryStatus == SentNotificationDataEntity.Succeeded)
+                {
+                    this.SMSSucceededCount++;
+                }
+                else if (sentNotification.SMSDeliveryStatus == SentNotificationDataEntity.Failed)
+                {
+                    this.SMSFailedCount++;
+                }
+                else if (sentNotification.SMSDeliveryStatus == SentNotificationDataEntity.RecipientNotFound)
+                {
+                    this.SMSRecipientNotFoundCount++;
+                }
             }
 
             if (sentNotification.SentDate != null

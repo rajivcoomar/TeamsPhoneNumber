@@ -18,6 +18,6 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Common.Repositories
         /// <summary>
         /// Spanish Language.
         /// </summary>
-        public static readonly string SpanishLangPartition = "Spanish Language";
+        public static readonly string SpanishLangPartition = "Spanish";
     }
 }

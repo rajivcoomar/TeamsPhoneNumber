@@ -6,6 +6,7 @@
 namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.Export.Streams
 {
     using System.Collections.Generic;
+    using System.Threading.Tasks;
     using Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.Export.Model;
 
     /// <summary>
@@ -28,5 +29,12 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.Export.Streams
         /// <param name="notificationStatus">the notification status.</param>
         /// <returns>the streams of team data.</returns>
         IAsyncEnumerable<IEnumerable<TeamData>> GetTeamDataStreamAsync(string notificationId, string notificationStatus);
+
+        /// <summary>
+        /// get multiple language text.
+        /// </summary>
+        /// <param name="metadataData">meta data.</param>
+        /// <returns>spanish language text.</returns>
+        public Task<Metadata> GetMultiLangNotificationData(Metadata metadataData);
     }
 }

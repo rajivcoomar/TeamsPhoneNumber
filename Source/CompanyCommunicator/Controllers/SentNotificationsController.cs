@@ -20,6 +20,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Controllers
     using Microsoft.Graph;
     using Microsoft.Teams.Apps.CompanyCommunicator.Authentication;
     using Microsoft.Teams.Apps.CompanyCommunicator.Common.Extensions;
+    using Microsoft.Teams.Apps.CompanyCommunicator.Common.Repositories;
     using Microsoft.Teams.Apps.CompanyCommunicator.Common.Repositories.ExportData;
     using Microsoft.Teams.Apps.CompanyCommunicator.Common.Repositories.NotificationData;
     using Microsoft.Teams.Apps.CompanyCommunicator.Common.Repositories.SentNotificationData;
@@ -41,6 +42,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Controllers
     {
         private readonly INotificationDataRepository notificationDataRepository;
         private readonly ISentNotificationDataRepository sentNotificationDataRepository;
+        private readonly ICustomMessageLocaleRepository customMessageLocaleRepository;
         private readonly ITeamDataRepository teamDataRepository;
         private readonly IPrepareToSendQueue prepareToSendQueue;
         private readonly IDataQueue dataQueue;
@@ -49,6 +51,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Controllers
         private readonly IExportDataRepository exportDataRepository;
         private readonly IAppCatalogService appCatalogService;
         private readonly IAppSettingsService appSettingsService;
+        private readonly ILanguageTranslateService languageTranslateService;
         private readonly UserAppOptions userAppOptions;
         private readonly IHttpClientFactory clientFactory;
         private readonly ILogger<SentNotificationsController> logger;
@@ -58,6 +61,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Controllers
         /// </summary>
         /// <param name="notificationDataRepository">Notification data repository service that deals with the table storage in azure.</param>
         /// <param name="sentNotificationDataRepository">Sent notification data repository.</param>
+        /// <param name="customMessageLocaleRepository">custom Message Locale Repository.</param>
         /// <param name="teamDataRepository">Team data repository instance.</param>
         /// <param name="prepareToSendQueue">The service bus queue for preparing to send notifications.</param>
         /// <param name="dataQueue">The service bus queue for the data queue.</param>
@@ -66,12 +70,14 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Controllers
         /// <param name="exportDataRepository">The Export data repository instance.</param>
         /// <param name="appCatalogService">App catalog service.</param>
         /// <param name="appSettingsService">App settings service.</param>
+        /// <param name="languageTranslateService">language Translate Service.</param>
         /// <param name="userAppOptions">User app options.</param>
         /// <param name="clientFactory">the http client factory.</param>
         /// <param name="loggerFactory">The logger factory.</param>
         public SentNotificationsController(
             INotificationDataRepository notificationDataRepository,
             ISentNotificationDataRepository sentNotificationDataRepository,
+            ICustomMessageLocaleRepository customMessageLocaleRepository,
             ITeamDataRepository teamDataRepository,
             IPrepareToSendQueue prepareToSendQueue,
             IDataQueue dataQueue,
@@ -80,6 +86,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Controllers
             IExportDataRepository exportDataRepository,
             IAppCatalogService appCatalogService,
             IAppSettingsService appSettingsService,
+            ILanguageTranslateService languageTranslateService,
             IOptions<UserAppOptions> userAppOptions,
             IHttpClientFactory clientFactory,
             ILoggerFactory loggerFactory)
@@ -91,6 +98,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Controllers
 
             this.notificationDataRepository = notificationDataRepository ?? throw new ArgumentNullException(nameof(notificationDataRepository));
             this.sentNotificationDataRepository = sentNotificationDataRepository ?? throw new ArgumentNullException(nameof(sentNotificationDataRepository));
+            this.customMessageLocaleRepository = customMessageLocaleRepository ?? throw new ArgumentNullException(nameof(customMessageLocaleRepository));
             this.teamDataRepository = teamDataRepository ?? throw new ArgumentNullException(nameof(teamDataRepository));
             this.prepareToSendQueue = prepareToSendQueue ?? throw new ArgumentNullException(nameof(prepareToSendQueue));
             this.dataQueue = dataQueue ?? throw new ArgumentNullException(nameof(dataQueue));
@@ -99,6 +107,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Controllers
             this.exportDataRepository = exportDataRepository ?? throw new ArgumentNullException(nameof(exportDataRepository));
             this.appCatalogService = appCatalogService ?? throw new ArgumentNullException(nameof(appCatalogService));
             this.appSettingsService = appSettingsService ?? throw new ArgumentNullException(nameof(appSettingsService));
+            this.languageTranslateService = languageTranslateService ?? throw new ArgumentNullException(nameof(languageTranslateService));
             this.userAppOptions = userAppOptions?.Value ?? throw new ArgumentNullException(nameof(userAppOptions));
             this.clientFactory = clientFactory ?? throw new ArgumentNullException(nameof(clientFactory));
             this.logger = loggerFactory?.CreateLogger<SentNotificationsController>() ?? throw new ArgumentNullException(nameof(loggerFactory));
@@ -128,6 +137,9 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Controllers
 
             var newSentNotificationId =
                 await this.notificationDataRepository.MoveDraftToSentPartitionAsync(draftNotificationDataEntity);
+
+            // to update the new notificaiton id into message locale conversion table
+            await this.languageTranslateService.UpdateNewNotificationID(draftNotificationDataEntity.RowKey, newSentNotificationId);
 
             // Ensure the data table needed by the Azure Functions to send the notifications exist in Azure storage.
             await this.sentNotificationDataRepository.EnsureSentNotificationDataTableExistsAsync();
@@ -175,12 +187,12 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Controllers
                     SentDate = notificationEntity.SentDate,
                     Succeeded = notificationEntity.Succeeded,
                     Failed = notificationEntity.Failed,
-                    Unknown = this.GetUnknownCount(notificationEntity),
+                    Unknown = this.GetUnknownCount(notificationEntity, "Teams"),
                     Canceled = notificationEntity.Canceled > 0 ? notificationEntity.Canceled : (int?)null,
-                    SMSSucceeded = notificationEntity.Succeeded,
-                    SMSFailed = notificationEntity.Failed,
-                    SMSUnknown = this.GetUnknownCount(notificationEntity),
-                    SMSCanceled = notificationEntity.Canceled > 0 ? notificationEntity.Canceled : (int?)null,
+                    SMSSucceeded = notificationEntity.SMSSucceeded,
+                    SMSFailed = notificationEntity.SMSFailed,
+                    SMSUnknown = this.GetUnknownCount(notificationEntity, "SMS"),
+                    SMSCanceled = notificationEntity.SMSCanceled > 0 ? notificationEntity.SMSCanceled : (int?)null,
                     TotalMessageCount = notificationEntity.TotalMessageCount,
                     SendingStartedDate = notificationEntity.SendingStartedDate,
                     Status = notificationEntity.GetStatus(),
@@ -259,12 +271,12 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Controllers
                 SentDate = notificationEntity.SentDate,
                 Succeeded = notificationEntity.Succeeded,
                 Failed = notificationEntity.Failed,
-                Unknown = this.GetUnknownCount(notificationEntity),
+                Unknown = this.GetUnknownCount(notificationEntity, "Teams"),
                 Canceled = notificationEntity.Canceled > 0 ? notificationEntity.Canceled : (int?)null,
-                SMSSucceeded = notificationEntity.Succeeded,
-                SMSFailed = notificationEntity.Failed,
-                SMSUnknown = this.GetUnknownCount(notificationEntity),
-                SMSCanceled = notificationEntity.Canceled > 0 ? notificationEntity.Canceled : (int?)null,
+                SMSSucceeded = notificationEntity.SMSSucceeded,
+                SMSFailed = notificationEntity.SMSFailed,
+                SMSUnknown = this.GetUnknownCount(notificationEntity, "SMS"),
+                SMSCanceled = notificationEntity.SMSCanceled > 0 ? notificationEntity.SMSCanceled : (int?)null,
                 TeamNames = await this.teamDataRepository.GetTeamNamesByIdsAsync(notificationEntity.Teams),
                 RosterNames = await this.teamDataRepository.GetTeamNamesByIdsAsync(notificationEntity.Rosters),
                 GroupNames = groupNames,
@@ -335,9 +347,9 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Controllers
             return this.Ok();
         }
 
-        private int? GetUnknownCount(NotificationDataEntity notificationEntity)
+        private int? GetUnknownCount(NotificationDataEntity notificationEntity, string msgType)
         {
-            var unknown = notificationEntity.Unknown;
+            var unknown = msgType == "Teams" ? notificationEntity.Unknown : notificationEntity.SMSUnknown;
 
             // In CC v2, the number of throttled recipients are counted and saved in NotificationDataEntity.Unknown property.
             // However, CC v1 saved the number of throttled recipients in NotificationDataEntity.Throttled property.

@@ -57,7 +57,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.Export.Activities
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         [FunctionName(FunctionNames.UploadActivity)]
         public async Task UploadActivityAsync(
-            [ActivityTrigger](NotificationDataEntity sentNotificationDataEntity, Metadata metadata, string fileName) uploadData)
+            [ActivityTrigger] (NotificationDataEntity sentNotificationDataEntity, Metadata metadata, string fileName) uploadData)
         {
             if (uploadData.sentNotificationDataEntity == null)
             {
@@ -79,6 +79,8 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.Export.Activities
             await blobContainerClient.SetAccessPolicyAsync(PublicAccessType.None);
             var blob = blobContainerClient.GetBlobClient(uploadData.fileName);
 
+            var spanishLangData = await this.userDataStream.GetMultiLangNotificationData(uploadData.metadata);
+
             using var memorystream = new MemoryStream();
             using (var archive = new ZipArchive(memorystream, ZipArchiveMode.Create, true))
             {
@@ -94,6 +96,11 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.Export.Activities
                     csv.WriteHeader(typeof(Metadata));
                     await csv.NextRecordAsync();
                     csv.WriteRecord(uploadData.metadata);
+                    if (spanishLangData != null)
+                    {
+                        await csv.NextRecordAsync();
+                        csv.WriteRecord(spanishLangData);
+                    }
                 }
 
                 // message delivery csv creation.

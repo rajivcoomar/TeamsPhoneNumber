@@ -19,7 +19,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Common.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Strings {
@@ -124,11 +124,101 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Teams Failed.
+        /// </summary>
+        public static string ColumnName_Failed {
+            get {
+                return ResourceManager.GetString("ColumnName_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message Author.
+        /// </summary>
+        public static string ColumnName_MessageAuthor {
+            get {
+                return ResourceManager.GetString("ColumnName_MessageAuthor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message Button Link.
+        /// </summary>
+        public static string ColumnName_MessageButtonLink {
+            get {
+                return ResourceManager.GetString("ColumnName_MessageButtonLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message Button Title.
+        /// </summary>
+        public static string ColumnName_MessageButtonTitle {
+            get {
+                return ResourceManager.GetString("ColumnName_MessageButtonTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message Summary.
+        /// </summary>
+        public static string ColumnName_MessageSummary {
+            get {
+                return ResourceManager.GetString("ColumnName_MessageSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Message Title.
         /// </summary>
         public static string ColumnName_MessageTitle {
             get {
                 return ResourceManager.GetString("ColumnName_MessageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message Type.
+        /// </summary>
+        public static string ColumnName_MessageType {
+            get {
+                return ResourceManager.GetString("ColumnName_MessageType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mobile Delivery Status.
+        /// </summary>
+        public static string ColumnName_MobileDeliveryStatus {
+            get {
+                return ResourceManager.GetString("ColumnName_MobileDeliveryStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mobile Number.
+        /// </summary>
+        public static string ColumnName_MobileNumber {
+            get {
+                return ResourceManager.GetString("ColumnName_MobileNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mobile Status Reason.
+        /// </summary>
+        public static string ColumnName_MobileStatusReason {
+            get {
+                return ResourceManager.GetString("ColumnName_MobileStatusReason", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preferred Language.
+        /// </summary>
+        public static string ColumnName_PreferredLanguage {
+            get {
+                return ResourceManager.GetString("ColumnName_PreferredLanguage", resourceCulture);
             }
         }
         
@@ -142,11 +232,38 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SMS Failed.
+        /// </summary>
+        public static string ColumnName_SMSFailed {
+            get {
+                return ResourceManager.GetString("ColumnName_SMSFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SMS Succeeded.
+        /// </summary>
+        public static string ColumnName_SMSSucceeded {
+            get {
+                return ResourceManager.GetString("ColumnName_SMSSucceeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Status Reason.
         /// </summary>
         public static string ColumnName_StatusReason {
             get {
                 return ResourceManager.GetString("ColumnName_StatusReason", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Teams Succeeded.
+        /// </summary>
+        public static string ColumnName_Succeeded {
+            get {
+                return ResourceManager.GetString("ColumnName_Succeeded", resourceCulture);
             }
         }
         

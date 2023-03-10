@@ -31,6 +31,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Send.Func.Test
                 RecipientId = "RecipientId1",
             },
             NotificationId = "notification1",
+            MessageType = "Teams Only"
         };
 
         private readonly int sendRetryDelayNumberOfSeconds = 75;

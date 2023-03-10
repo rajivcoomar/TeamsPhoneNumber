@@ -7,11 +7,18 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Common.Services
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
+    using System.Net.Http;
+    using System.Net.Http.Headers;
+    using System.Text;
+    using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.Bot.Schema;
     using Microsoft.Teams.Apps.CompanyCommunicator.Common.Repositories;
     using Microsoft.Teams.Apps.CompanyCommunicator.Common.Repositories.UserData;
+    using Microsoft.Teams.Apps.CompanyCommunicator.Common.Services.MessageQueues.SendQueue;
+    using Newtonsoft.Json;
 
     /// <summary>
     /// App settings service implementation.
@@ -91,7 +98,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Common.Services
 
             if (!messageResponseDict.ContainsKey("Message"))
             {
-                if (activity.Text.ToLower().Contains("stop"))
+                if (Constants.StopKeywords.Contains(activity.Text.ToLower()))
                 {
                     if (Constants.SpanishKeywords.Contains(langResponse.ToLower()))
                     {
@@ -101,6 +108,8 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Common.Services
                     {
                         messageResponse = await this.GetMessageAsync(CustomAppConfigTableName.StopMessageENRowKey);
                     }
+
+                    await this.OnOptOutFunctionAsync(activity.From.AadObjectId);
                 }
                 else if (Constants.AllLanguageKeywords.Contains(activity.Text.ToLower()))
                 {
@@ -147,7 +156,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Common.Services
             var isMsgSent = userData?.TeamsInitialMessageSent ?? false;
             if (!isMsgSent)
             {
-                if (!string.IsNullOrEmpty(userData.PreferredLanguage) || Constants.SpanishKeywords.Contains(userData.PreferredLanguage.ToLower()))
+                if (!string.IsNullOrEmpty(userData.PreferredLanguage) && Constants.SpanishKeywords.Contains(userData.PreferredLanguage.ToLower()))
                 {
                     messageResponse = await this.GetMessageAsync(CustomAppConfigTableName.InitialTeamsMessageESRowKey);
                 }
@@ -161,6 +170,94 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Common.Services
             }
 
             return messageResponse;
+        }
+
+        /// <summary>
+        /// remove user from group.
+        /// </summary>
+        /// <param name="employeeID">employee id.</param>
+        /// <returns>A representing the result of the asynchronous operation.</returns>
+        public async Task<string> OnOptOutFunctionAsync(string employeeID)
+        {
+            try
+            {
+                var url = await this.GetMessageAsync(CustomAppConfigTableName.OptOutFunctionURLRowKey); // "https://sendsmscc.azurewebsites.net/api/Opt-OutFunction?code=KJHBZN1xBno_Fz_5sX0AIs2QV4YPGtZPD8tLfIUulyqPAzFuyzW0EQ==";
+
+                dynamic content = new { UserID = employeeID, UserTypeToDelete = "TEAMS" };
+
+                CancellationToken cancellationToken;
+
+                using (var myclient = new HttpClient())
+                using (var myrequest = new HttpRequestMessage(HttpMethod.Post, url))
+                using (var httpContent = this.CreateHttpContent(content))
+                {
+                    myrequest.Content = httpContent;
+
+                    using (var newresponse = await myclient
+                        .SendAsync(myrequest, HttpCompletionOption.ResponseHeadersRead, cancellationToken)
+                        .ConfigureAwait(false))
+                    {
+                        //var MyListData = newresponse;
+                        return string.Empty;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// remove user from group.
+        /// </summary>
+        /// <param name="messageContent">message Content.</param>
+        /// <returns>A representing the result of the asynchronous operation.</returns>
+        public async Task<string> SendSMSFunctionAsync(SendQueueMessageContent messageContent)
+        {
+            try
+            {
+                var url = await this.GetMessageAsync(CustomAppConfigTableName.SendSMSFunctionURLRowKey); // "https://sendsmscc.azurewebsites.net/api/Opt-OutFunction?code=KJHBZN1xBno_Fz_5sX0AIs2QV4YPGtZPD8tLfIUulyqPAzFuyzW0EQ==";
+
+                dynamic content = messageContent; // new { UserID = employeeID, UserTypeToDelete = "TEAMS" };
+
+                CancellationToken cancellationToken;
+
+                using (var myclient = new HttpClient())
+                using (var myrequest = new HttpRequestMessage(HttpMethod.Post, url))
+                using (var httpContent = this.CreateHttpContent(content))
+                {
+                    myrequest.Content = httpContent;
+
+                    using (var newresponse = await myclient
+                        .SendAsync(myrequest, HttpCompletionOption.ResponseHeadersRead, cancellationToken)
+                        .ConfigureAwait(false))
+                    {
+                        //var MyListData = newresponse;
+                        return string.Empty;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Serialize Json Into Stream.
+        /// </summary>
+        /// <param name="value">value.</param>
+        /// <param name="stream">stream.</param>
+        public void SerializeJsonIntoStream(object value, Stream stream)
+        {
+            using (var stremw = new StreamWriter(stream, new UTF8Encoding(false), 1024, true))
+            using (var jsonw = new JsonTextWriter(stremw) { Formatting = Formatting.None })
+            {
+                var js = new JsonSerializer();
+                js.Serialize(jsonw, value);
+                jsonw.Flush();
+            }
         }
 
         /// <summary>
@@ -239,6 +336,23 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Common.Services
                 rowKey);
 
             return custAppConfig?.Value;
+        }
+
+        private HttpContent CreateHttpContent(object content)
+        {
+            HttpContent httpContent = null;
+
+            if (content != null)
+            {
+                var memorystresm = new MemoryStream();
+                this.SerializeJsonIntoStream(content, memorystresm);
+                memorystresm.Seek(0, SeekOrigin.Begin);
+                httpContent = new StreamContent(memorystresm);
+                httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            }
+
+
+            return httpContent;
         }
     }
 }

@@ -9,10 +9,13 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.Export.Streams
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
+    using System.Reactive;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Localization;
     using Microsoft.Graph;
     using Microsoft.Teams.Apps.CompanyCommunicator.Common.Extensions;
+    using Microsoft.Teams.Apps.CompanyCommunicator.Common.Repositories;
+    using Microsoft.Teams.Apps.CompanyCommunicator.Common.Repositories.ExportData;
     using Microsoft.Teams.Apps.CompanyCommunicator.Common.Repositories.NotificationData;
     using Microsoft.Teams.Apps.CompanyCommunicator.Common.Repositories.SentNotificationData;
     using Microsoft.Teams.Apps.CompanyCommunicator.Common.Repositories.TeamData;
@@ -31,6 +34,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.Export.Streams
         private readonly ISentNotificationDataRepository sentNotificationDataRepository;
         private readonly ITeamDataRepository teamDataRepository;
         private readonly IUserDataRepository userDataRepository;
+        private readonly ICustomMessageLocaleRepository customMessageLocaleRepository;
         private readonly IUserTypeService userTypeService;
         private readonly IUsersService usersService;
         private readonly IStringLocalizer<Strings> localizer;
@@ -41,6 +45,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.Export.Streams
         /// <param name="sentNotificationDataRepository">the sent notification data repository.</param>
         /// <param name="teamDataRepository">the team data repository.</param>
         /// <param name="userDataRepository">the user data repository.</param>
+        /// <param name="customMessageLocaleRepository">custom Message Locale Repository</param>
         /// <param name="userTypeService">the user type service.</param>
         /// <param name="usersService">the users service.</param>
         /// <param name="localizer">Localization service.</param>
@@ -48,6 +53,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.Export.Streams
             ISentNotificationDataRepository sentNotificationDataRepository,
             ITeamDataRepository teamDataRepository,
             IUserDataRepository userDataRepository,
+            ICustomMessageLocaleRepository customMessageLocaleRepository,
             IUserTypeService userTypeService,
             IUsersService usersService,
             IStringLocalizer<Strings> localizer)
@@ -55,6 +61,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.Export.Streams
             this.sentNotificationDataRepository = sentNotificationDataRepository ?? throw new ArgumentNullException(nameof(sentNotificationDataRepository));
             this.teamDataRepository = teamDataRepository ?? throw new ArgumentNullException(nameof(teamDataRepository));
             this.userDataRepository = userDataRepository ?? throw new ArgumentNullException(nameof(userDataRepository));
+            this.customMessageLocaleRepository = customMessageLocaleRepository ?? throw new ArgumentNullException(nameof(customMessageLocaleRepository));
             this.userTypeService = userTypeService ?? throw new ArgumentNullException(nameof(userTypeService));
             this.usersService = usersService ?? throw new ArgumentNullException(nameof(usersService));
             this.localizer = localizer ?? throw new ArgumentNullException(nameof(localizer));
@@ -151,6 +158,42 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.Export.Streams
         }
 
         /// <summary>
+        /// get multiple language text.
+        /// </summary>
+        /// <param name="metadataData">meta data.</param>
+        /// <returns>spanish language text.</returns>
+        public async Task<Metadata> GetMultiLangNotificationData(
+            Metadata metadataData)
+        {
+            var customMessageLocaleData = await this.customMessageLocaleRepository.GetAsync(
+                partitionKey: CustomMessageLocaleTableName.SpanishLangPartition,
+                rowKey: metadataData.NotificationId);
+
+            if (customMessageLocaleData != null)
+            {
+                var metadata = new Metadata
+                {
+                    MessageTitle = metadataData.MessageTitle,
+                    MessageSummary = metadataData.MessageSummary,
+                    MessageAuthor = metadataData.MessageAuthor,
+                    Failed = metadataData.Failed,
+                    MessageButtonLink = metadataData.MessageButtonLink,
+                    MessageButtonTitle = metadataData.MessageButtonTitle,
+                    MessageType = metadataData.MessageType,
+                    SMSFailed = metadataData.SMSFailed,
+                    SMSSucceeded = metadataData.SMSSucceeded,
+                    Succeeded = metadataData.Succeeded,
+                    SentTimeStamp = metadataData.SentTimeStamp,
+                    ExportedBy = metadataData.ExportedBy,
+                    ExportTimeStamp = metadataData.ExportTimeStamp,
+                };
+                return metadata;
+            }
+
+            return null;
+        }
+
+        /// <summary>
         /// Create user data.
         /// </summary>
         /// <param name="sentNotificationDataEntities">the list of sent notification data entities.</param>
@@ -188,9 +231,15 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.Export.Streams
                     Name = user?.DisplayName,
                     Upn = user?.UserPrincipalName,
                     UserType = userType is null ? userType : this.localizer.GetString(userType),
+                    MobileNumber = sentNotification.MobileNumber,
+                    PreferredLanguage = sentNotification.PreferredLanguage,
+                    MessageType = sentNotification.MessageType,
                     DeliveryStatus = sentNotification.DeliveryStatus is null ? sentNotification.DeliveryStatus : this.localizer.GetString(sentNotification.DeliveryStatus),
                     StatusReason = this.GetStatusReason(sentNotification.ErrorMessage, sentNotification.StatusCode, notificationStatus),
                     Error = sentNotification.Exception,
+                    MobileDeliveryStatus = sentNotification.SMSDeliveryStatus is null ? sentNotification.SMSDeliveryStatus : this.localizer.GetString(sentNotification.SMSDeliveryStatus),
+                    MobileStatusReason = this.GetStatusReason(sentNotification.SMSDeliveryStatus, sentNotification.StatusCode, notificationStatus),
+                    // MobileError = sentNotification.Exception,
                 });
             }
 
@@ -254,5 +303,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.Export.Streams
 
             return $"{statusCode} : {result}";
         }
+
+
     }
 }
