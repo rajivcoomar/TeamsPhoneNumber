@@ -74,5 +74,15 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.Export.Model
         /// Gets or sets the error message.
         /// </summary>
         public string MobileError { get; set; }
+
+        /// <summary>
+        /// Gets or sets the User Messages.
+        /// </summary>
+        public string TeamsUserMessages { get; set; }
+
+        /// <summary>
+        /// Gets or sets the User Messages.
+        /// </summary>
+        public string SMSUserMessages { get; set; }
     }
 }

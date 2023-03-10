@@ -124,7 +124,7 @@
     <value>App Not Installed</value>
   </data>
   <data name="ColumnName_DeliveryStatus" xml:space="preserve">
-    <value>Delivery Status</value>
+    <value>Teams Delivery Status</value>
   </data>
   <data name="ColumnName_ExportedBy" xml:space="preserve">
     <value>Exported By</value>
@@ -139,7 +139,7 @@
     <value>Sent TimeStamp</value>
   </data>
   <data name="ColumnName_StatusReason" xml:space="preserve">
-    <value>Status Reason</value>
+    <value>Teams Status Reason</value>
   </data>
   <data name="ColumnName_TeamId" xml:space="preserve">
     <value>Team ID</value>
@@ -263,7 +263,7 @@
     <value>Canceled</value>
   </data>
   <data name="ColumnName_Error" xml:space="preserve">
-    <value>Error</value>
+    <value>Teams Error</value>
   </data>
   <data name="ColumnName_Failed" xml:space="preserve">
     <value>Teams Failed</value>
@@ -303,5 +303,14 @@
   </data>
   <data name="ColumnName_Succeeded" xml:space="preserve">
     <value>Teams Succeeded</value>
+  </data>
+  <data name="ColumnName_Language" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="ColumnName_SMSUserMessages" xml:space="preserve">
+    <value>SMS User Reply</value>
+  </data>
+  <data name="ColumnName_TeamsUserMessages" xml:space="preserve">
+    <value>Teams User Reply</value>
   </data>
 </root>

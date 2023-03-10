@@ -35,6 +35,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.Export.Streams
         private readonly ITeamDataRepository teamDataRepository;
         private readonly IUserDataRepository userDataRepository;
         private readonly ICustomMessageLocaleRepository customMessageLocaleRepository;
+        private readonly ICustomUserReplyRepository customUserReplyRepository;
         private readonly IUserTypeService userTypeService;
         private readonly IUsersService usersService;
         private readonly IStringLocalizer<Strings> localizer;
@@ -46,6 +47,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.Export.Streams
         /// <param name="teamDataRepository">the team data repository.</param>
         /// <param name="userDataRepository">the user data repository.</param>
         /// <param name="customMessageLocaleRepository">custom Message Locale Repository</param>
+        /// <param name="customUserReplyRepository">custom User Reply Repository.</param>
         /// <param name="userTypeService">the user type service.</param>
         /// <param name="usersService">the users service.</param>
         /// <param name="localizer">Localization service.</param>
@@ -54,6 +56,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.Export.Streams
             ITeamDataRepository teamDataRepository,
             IUserDataRepository userDataRepository,
             ICustomMessageLocaleRepository customMessageLocaleRepository,
+            ICustomUserReplyRepository customUserReplyRepository,
             IUserTypeService userTypeService,
             IUsersService usersService,
             IStringLocalizer<Strings> localizer)
@@ -62,6 +65,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.Export.Streams
             this.teamDataRepository = teamDataRepository ?? throw new ArgumentNullException(nameof(teamDataRepository));
             this.userDataRepository = userDataRepository ?? throw new ArgumentNullException(nameof(userDataRepository));
             this.customMessageLocaleRepository = customMessageLocaleRepository ?? throw new ArgumentNullException(nameof(customMessageLocaleRepository));
+            this.customUserReplyRepository = customUserReplyRepository ?? throw new ArgumentNullException(nameof(customUserReplyRepository));
             this.userTypeService = userTypeService ?? throw new ArgumentNullException(nameof(userTypeService));
             this.usersService = usersService ?? throw new ArgumentNullException(nameof(usersService));
             this.localizer = localizer ?? throw new ArgumentNullException(nameof(localizer));
@@ -173,12 +177,12 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.Export.Streams
             {
                 var metadata = new Metadata
                 {
-                    MessageTitle = metadataData.MessageTitle,
-                    MessageSummary = metadataData.MessageSummary,
-                    MessageAuthor = metadataData.MessageAuthor,
+                    MessageTitle = customMessageLocaleData.Title,
+                    MessageSummary = customMessageLocaleData.Summary,
+                    MessageAuthor = customMessageLocaleData.Author,
                     Failed = metadataData.Failed,
                     MessageButtonLink = metadataData.MessageButtonLink,
-                    MessageButtonTitle = metadataData.MessageButtonTitle,
+                    MessageButtonTitle = customMessageLocaleData.ButtonTitle,
                     MessageType = metadataData.MessageType,
                     SMSFailed = metadataData.SMSFailed,
                     SMSSucceeded = metadataData.SMSSucceeded,
@@ -186,6 +190,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.Export.Streams
                     SentTimeStamp = metadataData.SentTimeStamp,
                     ExportedBy = metadataData.ExportedBy,
                     ExportTimeStamp = metadataData.ExportTimeStamp,
+                    Language = customMessageLocaleData.PartitionKey,
                 };
                 return metadata;
             }
@@ -225,6 +230,9 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.Export.Streams
                     }
                 }
 
+                var teamsUserMessageData = await this.customUserReplyRepository.GetAsync(CustomUserReplyTableName.UserTeamsReplyPartition, sentNotification.RowKey);
+                var smsUserMessageData = await this.customUserReplyRepository.GetAsync(CustomUserReplyTableName.UserSMSReplyPartition, sentNotification.RowKey);
+
                 userdatalist.Add(new UserData()
                 {
                     Id = sentNotification.RowKey,
@@ -238,8 +246,10 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.Export.Streams
                     StatusReason = this.GetStatusReason(sentNotification.ErrorMessage, sentNotification.StatusCode, notificationStatus),
                     Error = sentNotification.Exception,
                     MobileDeliveryStatus = sentNotification.SMSDeliveryStatus is null ? sentNotification.SMSDeliveryStatus : this.localizer.GetString(sentNotification.SMSDeliveryStatus),
-                    MobileStatusReason = this.GetStatusReason(sentNotification.SMSDeliveryStatus, sentNotification.StatusCode, notificationStatus),
+                    // MobileStatusReason = this.GetStatusReason(sentNotification.SMSDeliveryStatus, sentNotification.StatusCode, notificationStatus),
                     // MobileError = sentNotification.Exception,
+                    TeamsUserMessages = teamsUserMessageData != null ? teamsUserMessageData.UserMessage : string.Empty,
+                    SMSUserMessages = smsUserMessageData != null ? smsUserMessageData.UserMessage : string.Empty,
                 });
             }
 
@@ -303,7 +313,5 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.Export.Streams
 
             return $"{statusCode} : {result}";
         }
-
-
     }
 }

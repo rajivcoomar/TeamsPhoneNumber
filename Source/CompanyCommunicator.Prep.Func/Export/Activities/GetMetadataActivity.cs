@@ -104,6 +104,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.Export.Activities
                 SentTimeStamp = notificationDataEntity.SentDate,
                 ExportedBy = userPrinicipalName,
                 ExportTimeStamp = exportDataEntity.SentDate,
+                Language = "English",
             };
             return metadata;
         }

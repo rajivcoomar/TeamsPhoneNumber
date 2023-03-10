@@ -25,6 +25,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.Export.Mappers
         public MetadataMap(IStringLocalizer<Strings> localizer)
         {
             this.localizer = localizer ?? throw new ArgumentNullException(nameof(localizer));
+            this.Map(x => x.Language).Name(this.localizer.GetString("ColumnName_Language"));
             this.Map(x => x.MessageTitle).Name(this.localizer.GetString("ColumnName_MessageTitle"));
             this.Map(x => x.MessageSummary).Name(this.localizer.GetString("ColumnName_MessageSummary"));
             this.Map(x => x.MessageAuthor).Name(this.localizer.GetString("ColumnName_MessageAuthor"));

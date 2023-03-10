@@ -88,7 +88,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Common.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delivery Status.
+        ///   Looks up a localized string similar to Teams Delivery Status.
         /// </summary>
         public static string ColumnName_DeliveryStatus {
             get {
@@ -97,7 +97,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Common.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error.
+        ///   Looks up a localized string similar to Teams Error.
         /// </summary>
         public static string ColumnName_Error {
             get {
@@ -129,6 +129,15 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Common.Resources {
         public static string ColumnName_Failed {
             get {
                 return ResourceManager.GetString("ColumnName_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Language.
+        /// </summary>
+        public static string ColumnName_Language {
+            get {
+                return ResourceManager.GetString("ColumnName_Language", resourceCulture);
             }
         }
         
@@ -250,7 +259,16 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Common.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Status Reason.
+        ///   Looks up a localized string similar to SMS User Reply.
+        /// </summary>
+        public static string ColumnName_SMSUserMessages {
+            get {
+                return ResourceManager.GetString("ColumnName_SMSUserMessages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Teams Status Reason.
         /// </summary>
         public static string ColumnName_StatusReason {
             get {
@@ -282,6 +300,15 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Common.Resources {
         public static string ColumnName_TeamName {
             get {
                 return ResourceManager.GetString("ColumnName_TeamName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Teams User Reply.
+        /// </summary>
+        public static string ColumnName_TeamsUserMessages {
+            get {
+                return ResourceManager.GetString("ColumnName_TeamsUserMessages", resourceCulture);
             }
         }
         

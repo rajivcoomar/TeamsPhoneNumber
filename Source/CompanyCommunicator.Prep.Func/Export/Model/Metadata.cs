@@ -83,5 +83,10 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.Export.Model
         /// of a failure response in the API call.
         /// </summary>
         public int Failed { get; set; }
+
+        /// <summary>
+        /// Gets or sets Language.
+        /// </summary>
+        public string Language { get; set; }
     }
 }

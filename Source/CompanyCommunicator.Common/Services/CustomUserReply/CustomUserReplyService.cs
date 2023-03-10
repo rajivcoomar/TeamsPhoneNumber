@@ -70,7 +70,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Common.Services
             }
 
             // to get the earlier message and append the current message to earlier one
-            string rowKeyValue = activity.Conversation.Id + ":" + activity.From.AadObjectId;
+            string rowKeyValue = activity.From.AadObjectId; // activity.Conversation.Id + ":" + activity.From.AadObjectId;
             var messagetoUpdate = await this.GetCustomReplyAsync(rowKeyValue);
             if (string.IsNullOrEmpty(messagetoUpdate))
             {
@@ -84,7 +84,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Common.Services
             var customUserReply = new CustomUserReplyEntity()
             {
                 PartitionKey = CustomUserReplyTableName.UserTeamsReplyPartition,
-                RowKey = activity.Conversation.Id + ":" + activity.From.AadObjectId,
+                RowKey = rowKeyValue, // activity.Conversation.Id + ":" + activity.From.AadObjectId,
                 ConversationId = activity.Conversation.Id,
                 UserID = activity.From.AadObjectId,
                 UserMessage = messagetoUpdate,
